@@ -1,0 +1,6 @@
+# Git ignore
+brewlog-api.iml
+.idea/
+/target
+/src/main/resources/application.yml
+
