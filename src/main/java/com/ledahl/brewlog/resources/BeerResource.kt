@@ -15,8 +15,8 @@ class BeerResource(val beerService: BeerService) {
     @ResponseBody
     fun getBeers() = beerService.getBeers()
 
-    @RequestMapping(path = arrayOf("/{batchNumber}"), method = arrayOf(RequestMethod.GET))
-    fun getBeer(@PathVariable("batchNumber") id: Int?): ResponseEntity<BeerDto> {
+    @RequestMapping(path = arrayOf("/{batch_number}"), method = arrayOf(RequestMethod.GET))
+    fun getBeer(@PathVariable("batch_number") id: Int?): ResponseEntity<BeerDto> {
         if (id !is Int) return response(409)
         val beer: BeerDto = beerService.getBeer(id.toLong()) ?: return response(200)
         
@@ -31,12 +31,12 @@ class BeerResource(val beerService: BeerService) {
         return ResponseEntity.created(URI.create("/beer/" + actualId.toString())).build()
     }
 
-    @RequestMapping(path = arrayOf("/{batchNumber}"), method = arrayOf(RequestMethod.POST))
+    @RequestMapping(path = arrayOf("/{batch_number}"), method = arrayOf(RequestMethod.POST))
     @ResponseStatus(HttpStatus.OK)
-    fun updateBeerVolume(@PathVariable("batchNumber") id: Long?,
-                         @RequestParam("volumeTapped") newVolume: Double?) {
+    fun updateBeerVolume(@PathVariable("batch_number") id: Long?,
+                         @RequestParam("volume_used") volumeUsed: Double?) {
         val batch = id?.let { it } ?: return
-        val volume = newVolume?.let { it } ?: return
+        val volume = volumeUsed?.let { it } ?: return
 
         beerService.updateVolume(batch, volume)
     }
