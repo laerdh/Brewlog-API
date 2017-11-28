@@ -2,8 +2,10 @@ package com.ledahl.brewlog.resources
 
 import com.ledahl.brewlog.dto.BeerDto
 import com.ledahl.brewlog.services.BeerService
-import org.springframework.http.HttpStatus
+import com.ledahl.brewlog.util.Constants
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
+import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.web.bind.annotation.*
 import java.net.URI
 
@@ -11,14 +13,17 @@ import java.net.URI
 @RequestMapping("/beer")
 class BeerResource(val beerService: BeerService) {
 
+    @Autowired
+    lateinit var template: SimpMessagingTemplate
+
     @RequestMapping(method = arrayOf(RequestMethod.GET))
     @ResponseBody
     fun getBeers() = beerService.getBeers()
 
     @RequestMapping(path = arrayOf("/{batch_number}"), method = arrayOf(RequestMethod.GET))
     fun getBeer(@PathVariable("batch_number") id: Int?): ResponseEntity<BeerDto> {
-        if (id !is Int) return response(409)
-        val beer: BeerDto = beerService.getBeer(id.toLong()) ?: return response(200)
+        val actualId: Int = id?.let { it } ?: return response(409)
+        val beer: BeerDto = beerService.getBeer(actualId.toLong())?.let { it } ?: return response(200)
         
         return ResponseEntity.ok(beer)
     }
@@ -32,13 +37,13 @@ class BeerResource(val beerService: BeerService) {
     }
 
     @RequestMapping(path = arrayOf("/{batch_number}"), method = arrayOf(RequestMethod.POST))
-    @ResponseStatus(HttpStatus.OK)
-    fun updateBeerVolume(@PathVariable("batch_number") id: Long?,
-                         @RequestParam("volume_used") volumeUsed: Double?) {
-        val batch = id?.let { it } ?: return
-        val volume = volumeUsed?.let { it } ?: return
+    fun updateVolumeOnCurrentSelected(@RequestParam("volume_used") volumeUsed: Double?) : ResponseEntity<BeerDto> {
+        val volume = volumeUsed?.let { it } ?: return response(409)
+        val updatedBeer = beerService.updateCurrentSelected(volume)?.let { it } ?: return response(409)
 
-        beerService.updateVolume(batch, volume)
+        template.convertAndSend(Constants.KEG_LEVEL_SUBSCRIBER_URI, updatedBeer)
+
+        return ResponseEntity.ok(updatedBeer)
     }
 
     private fun response(status: Int): ResponseEntity<BeerDto> = ResponseEntity.status(status).build()

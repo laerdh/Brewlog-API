@@ -13,5 +13,6 @@ CREATE TABLE beers
   date DATETIME NOT NULL,
   brewer INT NOT NULL,
   comment VARCHAR(500),
+  selected BOOL,
   CONSTRAINT FK_Brewer_UserId FOREIGN KEY (brewer) REFERENCES users(id)
 );

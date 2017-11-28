@@ -12,4 +12,5 @@ data class Beer(val batchNumber: Long,
                 val alcohol: Double?,
                 val date: Date,
                 val brewer: String,
-                val comment: String?)
+                val comment: String?,
+                val isSelected: Boolean)

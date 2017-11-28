@@ -15,6 +15,7 @@ class BeerProperties {
         const val DATE: String = "date"
         const val BREWER: String = "brewer"
         const val COMMENT: String = "comment"
+        const val SELECTED: String = "selected"
 
         const val SELECT_ALL_BEERS: String = "SELECT " +
                 "b." + BeerProperties.PRIMARY_KEY + ", " +
@@ -28,10 +29,32 @@ class BeerProperties {
                 "b." + BeerProperties.DATE + ", " +
                 "u." + UserProperties.FIRST_NAME + ", " +
                 "u." + UserProperties.LAST_NAME + ", " +
-                "b." + BeerProperties.COMMENT + " " +
+                "b." + BeerProperties.COMMENT + ", " +
+                "b." + BeerProperties.SELECTED + " " +
                 "FROM " + BeerProperties.TABLE_NAME + " b " +
                 "LEFT JOIN users u ON b." + BeerProperties.BREWER + " = " +
-                "u." + UserProperties.PRIMARY_KEY + ";"
+                "u." + UserProperties.PRIMARY_KEY + " " +
+                "ORDER BY " + BeerProperties.SELECTED + " DESC;"
+
+        const val SELECT_ALL_AVAILABLE_BEERS: String = "SELECT " +
+                "b." + BeerProperties.PRIMARY_KEY + ", " +
+                "b." + BeerProperties.NAME + ", " +
+                "b." + BeerProperties.TYPE + ", " +
+                "b." + BeerProperties.SIZE + ", " +
+                "b." + BeerProperties.VOLUME_REMAINING + ", " +
+                "b." + BeerProperties.ORIGINAL_GRAVITY + ", " +
+                "b." + BeerProperties.FINAL_GRAVITY + ", " +
+                "b." + BeerProperties.ALCOHOL + ", " +
+                "b." + BeerProperties.DATE + ", " +
+                "u." + UserProperties.FIRST_NAME + ", " +
+                "u." + UserProperties.LAST_NAME + ", " +
+                "b." + BeerProperties.COMMENT + ", " +
+                "b." + BeerProperties.SELECTED + " " +
+                "FROM " + BeerProperties.TABLE_NAME + " b " +
+                "LEFT JOIN users u ON b." + BeerProperties.BREWER + " = " +
+                "u." + UserProperties.PRIMARY_KEY + " " +
+                "WHERE " + BeerProperties.VOLUME_REMAINING + " > 0 " +
+                "ORDER BY " + BeerProperties.SELECTED + " DESC;"
 
         const val SELECT_BEER: String = "SELECT " +
                 "b." + BeerProperties.PRIMARY_KEY + ", " +
@@ -45,11 +68,32 @@ class BeerProperties {
                 "b." + BeerProperties.DATE + ", " +
                 "u." + UserProperties.FIRST_NAME + ", " +
                 "u." + UserProperties.LAST_NAME + ", " +
-                "b." + BeerProperties.COMMENT + " " +
+                "b." + BeerProperties.COMMENT + ", " +
+                "b." + BeerProperties.SELECTED + " " +
                 "FROM " + BeerProperties.TABLE_NAME + " b " +
                 "LEFT JOIN users u ON b." + BeerProperties.BREWER + " = " +
                 "u." + UserProperties.PRIMARY_KEY + " " +
                 "WHERE " + BeerProperties.PRIMARY_KEY + "=:" + BeerProperties.PRIMARY_KEY + ";"
+
+        const val SELECT_CURRENT_SELECTED_BEER: String = "SELECT " +
+                "b." + BeerProperties.PRIMARY_KEY + ", " +
+                "b." + BeerProperties.NAME + ", " +
+                "b." + BeerProperties.TYPE + ", " +
+                "b." + BeerProperties.SIZE + ", " +
+                "b." + BeerProperties.VOLUME_REMAINING + ", " +
+                "b." + BeerProperties.ORIGINAL_GRAVITY + ", " +
+                "b." + BeerProperties.FINAL_GRAVITY + ", " +
+                "b." + BeerProperties.ALCOHOL + ", " +
+                "b." + BeerProperties.DATE + ", " +
+                "u." + UserProperties.FIRST_NAME + ", " +
+                "u." + UserProperties.LAST_NAME + ", " +
+                "b." + BeerProperties.COMMENT + ", " +
+                "b." + BeerProperties.SELECTED + " " +
+                "FROM " + BeerProperties.TABLE_NAME + " b " +
+                "LEFT JOIN users u ON b." + BeerProperties.BREWER + " = " +
+                "u." + UserProperties.PRIMARY_KEY + " " +
+                "WHERE " + BeerProperties.SELECTED + " " +
+                "LIMIT 1;"
 
         const val INSERT_BEER: String = "INSERT INTO " + BeerProperties.TABLE_NAME +
                 "(" +

@@ -12,7 +12,7 @@ interface BeerService {
     fun getBeers() : List<BeerDto?>
     fun getBeer(id: Long) : BeerDto?
     fun insertBeer(b: BeerDto) : Long?
-    fun updateVolume(batchNumber: Long, volumeUsed: Double) : Boolean
+    fun updateCurrentSelected(volumeUsed: Double) : BeerDto?
 }
 
 @Service
@@ -42,14 +42,17 @@ class BeerServiceImpl : BeerService {
         return beerRepository.insertBeer(b)
     }
 
-    override fun updateVolume(batchNumber: Long, volumeUsed: Double) : Boolean {
-        val b: Beer = beerRepository.getBeer(batchNumber)?.let { it } ?: return false
-        val remainingVolume = b.volumeRemaining - volumeUsed
+    override fun updateCurrentSelected(volumeUsed: Double) : BeerDto? {
+        val beer: Beer = beerRepository.getCurrentSelectedBeer()?.let { it } ?: return null
+        val remainingVolume = beer.volumeRemaining - volumeUsed
 
         if (remainingVolume < 0) {
-            return false
+            return null
         }
 
-        return beerRepository.updateVolume(batchNumber, remainingVolume) > 0
+        if (beerRepository.updateVolume(beer.batchNumber, remainingVolume) > 0) {
+            return mapper.map(beerRepository.getBeer(beer.batchNumber))
+        }
+        return null
     }
 }

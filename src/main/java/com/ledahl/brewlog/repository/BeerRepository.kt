@@ -22,6 +22,13 @@ class BeerRepository {
         )
     }
 
+    fun getAvailableBeers() : List<Beer> {
+        return jdbcTemplate.query(
+                BeerProperties.SELECT_ALL_AVAILABLE_BEERS,
+                BeerRowMapper()
+        )
+    }
+
     fun getBeer(id: Long) : Beer? {
         val namedParameterJdbcTemplate = NamedParameterJdbcTemplate(jdbcTemplate)
 
@@ -31,6 +38,13 @@ class BeerRepository {
         return namedParameterJdbcTemplate.queryForObject(
                 BeerProperties.SELECT_BEER,
                 parameterSource,
+                BeerRowMapper()
+        )
+    }
+
+    fun getCurrentSelectedBeer() : Beer? {
+        return jdbcTemplate.queryForObject(
+                BeerProperties.SELECT_CURRENT_SELECTED_BEER,
                 BeerRowMapper()
         )
     }
