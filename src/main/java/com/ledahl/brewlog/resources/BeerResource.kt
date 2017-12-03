@@ -36,14 +36,20 @@ class BeerResource(val beerService: BeerService) {
         return ResponseEntity.created(URI.create("/beer/" + actualId.toString())).build()
     }
 
-    @RequestMapping(path = arrayOf("/current"), method = arrayOf(RequestMethod.POST))
-    fun updateVolumeOnCurrentSelected(@RequestParam("volume_consumed") volumeConsumed: Double?) : ResponseEntity<BeerDto> {
+    @RequestMapping(path = arrayOf("/current/consume"), method = arrayOf(RequestMethod.POST))
+    fun updateVolumeOnCurrentSelected(@RequestParam("volume") volumeConsumed: Double?) : ResponseEntity<BeerDto> {
         val volume = volumeConsumed?.let { it } ?: return response(409)
-        val updatedBeer = beerService.updateCurrentSelected(volume)?.let { it } ?: return response(409)
+        val updatedBeer = beerService.updateVolumeConsumed(volume)?.let { it } ?: return response(409)
 
         template.convertAndSend(Constants.KEG_LEVEL_SUBSCRIBER_URI, updatedBeer)
 
         return ResponseEntity.ok(updatedBeer)
+    }
+
+    @RequestMapping(path = arrayOf("/current"), method = arrayOf(RequestMethod.POST))
+    fun updateCurrentSelected(@RequestParam("batch_number") id: Long?) : Boolean {
+        val actualId: Long = id?.let { it } ?: return false
+        return beerService.updateCurrentSelected(actualId)
     }
 
     private fun response(status: Int): ResponseEntity<BeerDto> = ResponseEntity.status(status).build()

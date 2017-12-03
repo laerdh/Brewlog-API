@@ -42,10 +42,28 @@ class BeerRepository {
         )
     }
 
-    fun getCurrentSelectedBeer() : Beer? {
+    fun setCurrentSelected(id: Long) : Int {
+        val namedParameterJdbcTemplate = NamedParameterJdbcTemplate(jdbcTemplate)
+
+        val parameterSource = MapSqlParameterSource()
+        parameterSource.addValue(BeerProperties.PRIMARY_KEY, id)
+
+        return namedParameterJdbcTemplate.update(
+                BeerProperties.SET_CURRENT_ACTIVE,
+                parameterSource
+        )
+    }
+
+    fun getCurrentSelected() : Beer? {
         return jdbcTemplate.queryForObject(
                 BeerProperties.SELECT_CURRENT_SELECTED_BEER,
                 BeerRowMapper()
+        )
+    }
+
+    fun resetCurrentSelected() : Int {
+        return jdbcTemplate.update(
+                BeerProperties.RESET_CURRENT_ACTIVE
         )
     }
 
@@ -55,6 +73,9 @@ class BeerRepository {
         val parameterSource = MapSqlParameterSource()
         parameterSource.addValue(BeerProperties.NAME, b.name)
         parameterSource.addValue(BeerProperties.TYPE, b.type)
+        parameterSource.addValue(BeerProperties.SIZE, b.size)
+        parameterSource.addValue(BeerProperties.VOLUME_REMAINING, b.volumeRemaining)
+        parameterSource.addValue(BeerProperties.ORIGINAL_GRAVITY, 0.0)
         parameterSource.addValue(BeerProperties.DATE, b.date)
         parameterSource.addValue(BeerProperties.BREWER, b.brewer)
         parameterSource.addValue(BeerProperties.COMMENT, b.comment)

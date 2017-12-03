@@ -116,6 +116,13 @@ class BeerProperties {
                 ":" + BeerProperties.COMMENT +
                 ")"
 
+        const val SET_CURRENT_ACTIVE: String = "UPDATE " + BeerProperties.TABLE_NAME + " " +
+                "SET " + BeerProperties.SELECTED + " = 1 " +
+                "WHERE " + BeerProperties.PRIMARY_KEY + " =:" + BeerProperties.PRIMARY_KEY
+
+        const val RESET_CURRENT_ACTIVE: String = "UPDATE " + BeerProperties.TABLE_NAME + " " +
+                "SET " + BeerProperties.SELECTED + " = 0"
+
         const val UPDATE_VOLUME_REMAINING: String = "UPDATE " + BeerProperties.TABLE_NAME + " " +
                 "SET " + BeerProperties.VOLUME_REMAINING + "=:" + BeerProperties.VOLUME_REMAINING + " " +
                 "WHERE " + BeerProperties.PRIMARY_KEY + "=:" + BeerProperties.PRIMARY_KEY + ";"
