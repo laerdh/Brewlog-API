@@ -20,7 +20,7 @@ class BeerRowMapper : RowMapper<Beer> {
                 rs.getDouble(BeerProperties.ORIGINAL_GRAVITY),
                 rs.getDouble(BeerProperties.FINAL_GRAVITY),
                 rs.getDouble(BeerProperties.ALCOHOL),
-                rs.getDate(BeerProperties.DATE),
+                rs.getString(BeerProperties.DATE),
                 rs.getString(UserProperties.FIRST_NAME) + " " + rs.getString(UserProperties.LAST_NAME),
                 rs.getString(BeerProperties.COMMENT),
                 rs.getBoolean(BeerProperties.SELECTED)
